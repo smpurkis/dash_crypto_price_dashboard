@@ -4,8 +4,7 @@ import plotly.graph_objects as go
 
 from Crypto import cc
 from _callbacks import _callbacks
-from config import app, Output, Input, parse, html, dcc, date, \
-    timedelta
+from config import app, Output, Input, parse, html, dcc
 
 
 def make_graph(title: str, crypto: str, show: bool = False) -> html.Div:
@@ -17,14 +16,6 @@ def make_graph(title: str, crypto: str, show: bool = False) -> html.Div:
             html.Div(children='''
                 Dash: A web application framework for your data.
             '''),
-            dcc.DatePickerRange(
-                id=f'{title}-datetime-range-picker',
-                min_date_allowed=date(1995, 8, 5),
-                max_date_allowed=date.today(),
-                initial_visible_month=date.today() - timedelta(days=7),
-                start_date=date.today() - timedelta(days=7),
-                end_date=date.today()
-            ),
             dcc.Loading(
                 id=f"{title}-loading-1",
                 children=[html.Div([dcc.Graph(id=f'{title}-example-graph')])],
@@ -36,8 +27,8 @@ def make_graph(title: str, crypto: str, show: bool = False) -> html.Div:
         @app.callback(
             [Output(f'{title}-example-graph', "figure"),
              Output(f"{title}-show-div", "style")],
-            [Input(f"{title}-datetime-range-picker", "start_date"),
-             Input(f"{title}-datetime-range-picker", "end_date"),
+            [Input(f"prices-datetime-range-picker", "start_date"),
+             Input(f"prices-datetime-range-picker", "end_date"),
              Input(f"prices-coin-options", "value")]
         )
         def hydrated_graph(start_date, end_date, cryptos_to_show: List[str]):
