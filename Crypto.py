@@ -18,6 +18,10 @@ class CryptoCurrencies:
         return coin_options
 
     @cache
+    def coin_information(self):
+        return self.get_coins().to_dict("records")
+
+    @cache
     def get_crypto_market_data(self, crypto_currency: str, date_range: int) -> pd.DataFrame:
         """
         Returns the market data for a given crypto currency.

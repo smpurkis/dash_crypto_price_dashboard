@@ -42,6 +42,8 @@ def make_standard_date_options(_id: str):
             if triggered_button in ids_dates:
                 button_index = ids_dates.index(triggered_button)
                 colors[button_index] = "primary"
+            else:
+                colors[1] = "primary"
             return colors
 
     _callbacks.append(callbacks)
