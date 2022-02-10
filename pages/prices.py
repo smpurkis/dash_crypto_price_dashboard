@@ -10,9 +10,12 @@ def make_prices_page() -> html.Div:
 
     coin_options = cc.get_coin_options()
     default_values = ['bitcoin', 'ethereum']
+    allowed_values = ['bitcoin', 'ethereum']
     potential_graphs = [
         make_graph(coin["value"], coin["value"], show=True if coin["value"] in ['bitcoin', 'ethereum'] else False) for
-        coin in coin_options]
+        coin in coin_options
+        # if coin["value"] in allowed_values
+    ]
 
     layout = html.Div(
         [
@@ -34,25 +37,5 @@ def make_prices_page() -> html.Div:
             # make_graph(title="ravencoin", crypto="ravencoin"),
         ]
     )
-
-    # @callback(
-    #     Output(f"{title}-graphs", "children"),
-    #     [Input(f"{title}-coin-options", "value")]
-    # )
-    # def populate_graphs(coins: List[str]):
-    #     graphs = []
-    #     for coin in coins:
-    #         graphs.append(make_graph(title=coin, crypto=coin))
-    #     return graphs
-    #
-    # @callback(
-    #     Output(f"{title}-graphs", "children"),
-    #     [Input(f"{title}-coin-options", "value")]
-    # )
-    # def populate_graphs(coins: List[str]):
-    #     graphs = []
-    #     for coin in coins:
-    #         graphs.append(make_graph(title=coin, crypto=coin))
-    #     return graphs
 
     return layout
