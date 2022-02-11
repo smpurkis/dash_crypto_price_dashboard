@@ -40,7 +40,9 @@ preset_dates = {
     "All": {
         "_id": "-date-options-last-all",
         "color": "secondary",
-        "timedelta": timedelta(days=(datetime.now() - datetime(2009, 1, 1)).days),
+        "timedelta": timedelta(
+            days=(datetime.now() - datetime(2009, 1, 1)).days
+        ),  # set to start of bitcoin history
     },
 }
 ids_dates = [s["_id"] for s in preset_dates.values()]
