@@ -60,7 +60,11 @@ def make_graph(
                     html.H1(
                         children=crypto_info["name"], style={"margin-right": "5px"}
                     ),
-                    html.Img(src=crypto_info["image"]["small"]),
+                    html.A(
+                        children=html.Img(src=crypto_info["image"]["small"]),
+                        href=crypto_info["links"]["homepage"][0],
+                        target="_blank",
+                    ),
                 ],
             ),
             dbc.Button(
