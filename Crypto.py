@@ -14,8 +14,15 @@ class CryptoCurrencies:
         :param coin_id:
         :return:
         """
-        return self.cg.get_coin_by_id(coin_id, localization=False, tickers=False, market_data=False, community_data=True,
-                                      developer_data=False, sparkline=False)
+        return self.cg.get_coin_by_id(
+            coin_id,
+            localization=False,
+            tickers=False,
+            market_data=False,
+            community_data=True,
+            developer_data=False,
+            sparkline=False,
+        )
 
     @cache
     def get_coins_list(self):
@@ -37,15 +44,19 @@ class CryptoCurrencies:
         return self.get_coins().to_dict("records")
 
     @cache
-    def get_crypto_market_data(self, crypto_currency: str, date_range: int) -> pd.DataFrame:
+    def get_crypto_market_data(
+        self, crypto_currency: str, date_range: int
+    ) -> pd.DataFrame:
         """
         Returns the market data for a given crypto currency.
         :param crypto_currency:
         :param date_range:
         :return:
         """
-        crypto_market_data = self.cg.get_coin_market_chart_by_id(crypto_currency, vs_currency='usd', days=date_range)
-        df = pd.DataFrame(crypto_market_data['prices'], columns=["timestamp", "price"])
+        crypto_market_data = self.cg.get_coin_market_chart_by_id(
+            crypto_currency, vs_currency="usd", days=date_range
+        )
+        df = pd.DataFrame(crypto_market_data["prices"], columns=["timestamp", "price"])
         df["timestamp"] = pd.to_datetime(df["timestamp"] // 1000, unit="s")
         return df
 

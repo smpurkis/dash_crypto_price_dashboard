@@ -6,6 +6,7 @@ from pages.home import make_home_page
 from pages.prices import make_prices_page
 from _callbacks import _callbacks
 
+
 def make_layout() -> html.Div:
     SIDEBAR_STYLE = {
         "position": "fixed",
@@ -23,16 +24,13 @@ def make_layout() -> html.Div:
         "margin-right": "2rem",
         "padding": "2rem 1rem",
         "margin-left": "18rem",
-
     }
 
     sidebar = html.Div(
         [
             html.H2("Sidebar", className="display-4"),
             html.Hr(),
-            html.P(
-                "A simple sidebar layout with navigation links", className="lead"
-            ),
+            html.P("A simple sidebar layout with navigation links", className="lead"),
             dbc.Nav(
                 [
                     dbc.NavLink("Home", href="/", active="exact"),
@@ -64,10 +62,7 @@ def make_layout() -> html.Div:
         # "page-2": make_page_2(),
     }
 
-    @app.callback(
-        Output("page-content", "children"),
-        [Input("url", "pathname")]
-    )
+    @app.callback(Output("page-content", "children"), [Input("url", "pathname")])
     def render_page_content(pathname):
         if pathname == "/":
             return pages["home"]
