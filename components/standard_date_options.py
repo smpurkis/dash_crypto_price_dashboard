@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import timedelta, datetime
 
 import dash
 from dash import Output, Input
@@ -13,7 +13,7 @@ preset_dates = {
     "6 Months": {"_id": "-date-options-last-6-months", "color": "secondary", "timedelta": timedelta(days=180)},
     "1 Year": {"_id": "-date-options-last-year", "color": "secondary", "timedelta": timedelta(days=365)},
     "5 Years": {"_id": "-date-options-last-5-years", "color": "secondary", "timedelta": timedelta(days=1825)},
-    "All": {"_id": "-date-options-last-all", "color": "secondary", "timedelta": timedelta(days=36500)},
+    "All": {"_id": "-date-options-last-all", "color": "secondary", "timedelta": timedelta(days=(datetime.now() - datetime(2009, 1, 1)).days)},
 }
 ids_dates = [s["_id"] for s in preset_dates.values()]
 

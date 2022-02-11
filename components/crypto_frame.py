@@ -3,7 +3,7 @@ from typing import Any, Dict
 
 import regex
 
-from config import html, dcc
+from config import html, dcc, dbc
 
 
 def filter_html_tags(text: str) -> str:
@@ -21,7 +21,9 @@ def convert_html_to_dash_components(html_string: str) -> html.Div:
     :param html_string:
     :return:
     """
-    splits = re.split(r"(<[^>]*>(?:\w+)(?:\W+)?(?:\w+)?(?:\W+)?(?:\w+)?(?:\W+)?(?:\w+)?(?:\W+)?(?:\w+)?(?:\W+)?(?:\w+)?(?:\W+)?(?:\w+)?<\/\w+>)", html_string)  # split on html tags correctly
+    splits = re.split(
+        r"(<[^>]*>(?:\w+)(?:\W+)?(?:\w+)?(?:\W+)?(?:\w+)?(?:\W+)?(?:\w+)?(?:\W+)?(?:\w+)?(?:\W+)?(?:\w+)?(?:\W+)?(?:\w+)?<\/\w+>)",
+        html_string)  # split on html tags correctly
     dash_converted_html = []
     for split in splits:
         if "<" in split:
@@ -42,7 +44,6 @@ def convert_html_to_dash_components(html_string: str) -> html.Div:
 
 
 def make_graph(_id: str, crypto: str, crypto_info: Dict[str, Any], graph_fig) -> html.Div:
-    # description = filter_html_tags(text="\n".join(crypto_info['description']['en'].split("\r\n\r\n")))
     description = crypto_info['description']['en']
     description_components = convert_html_to_dash_components(html_string=description)
     layout = html.Div(
@@ -57,7 +58,25 @@ def make_graph(_id: str, crypto: str, crypto_info: Dict[str, Any], graph_fig) ->
                     html.H1(children=crypto_info["name"], style={"margin-right": "5px"}),
                     html.Img(src=crypto_info["image"]["small"]),
                 ]),
-            html.P(children=description_components, style={"font-size": "1.2em"}),
+            dbc.Button(
+                children="Show Description",
+                color="link",
+                id={
+                    'type': 'show-hide-crypto-button',
+                    'index': crypto
+                }, ),
+            html.Div(
+                id={
+                    'type': 'show-hide-crypto-description',
+                    'index': crypto
+                },
+                style={
+                    "display": "none"
+                },
+                children=[
+                    html.P(children=description_components, style={"font-size": "1.2em"})
+                ]
+            ),
             dcc.Loading(
                 id=f"{crypto}-loading-1",
                 children=[

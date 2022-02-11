@@ -1,10 +1,11 @@
 import dash
 import plotly.graph_objects as go
+from dash import MATCH
 
 from Crypto import cc
 from _callbacks import _callbacks
 from components.coin_options import make_coin_options
-from components.price_graph import make_graph
+from components.crypto_frame import make_graph
 from components.standard_date_options import make_standard_date_options
 from components.standard_date_options import preset_dates, ids_dates
 from config import app, Output, Input, parse, html, dcc
@@ -16,7 +17,6 @@ def make_prices_page() -> html.Div:
 
     coin_options = cc.get_coin_options()
     default_values = ['bitcoin', 'ethereum']
-
 
     layout = html.Div(
         [
@@ -54,7 +54,9 @@ def make_prices_page() -> html.Div:
 
     def callbacks():
         @app.callback(
-            [Output(f"{_id}-graphs", "children")],
+            [Output(f"{_id}-graphs", "children"),
+             Output(f"{_id}-datetime-range-picker", "start_date"),
+             Output(f"{_id}-datetime-range-picker", "end_date")],
             [Input(f"{_id}-datetime-range-picker", "start_date"),
              Input(f"{_id}-datetime-range-picker", "end_date"),
              Input(f"{_id}-coin-options", "value"),
@@ -89,8 +91,21 @@ def make_prices_page() -> html.Div:
                     )
                 else:
                     graphs.append(html.Div(f"{crypto} is not supported"))
-            return [graphs]
+            start_date = date.today() - timedelta(days=date_range)
+            return [graphs, start_date, end_date]
+
+        @app.callback(
+            [Output({'type': 'show-hide-crypto-description', 'index': MATCH}, 'style'),
+             Output({'type': 'show-hide-crypto-button', 'index': MATCH}, "children")],
+            [Input({'type': 'show-hide-crypto-button', 'index': MATCH}, "n_clicks"),
+             Input({'type': 'show-hide-crypto-description', 'index': MATCH}, 'style')]
+        )
+        def show_description(n_clicks, value):
+            if n_clicks is None:
+                return {'display': 'none'}, 'Show description'
+            else:
+                return {"display": "block"} if value["display"] == "none" else {
+                    "display": "none"}, 'Hide description' if value["display"] == "none" else 'Show description'
 
     _callbacks.append(callbacks)
-
     return layout
