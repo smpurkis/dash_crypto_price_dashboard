@@ -1,10 +1,25 @@
+from functools import cache
+
 import pandas as pd
 from pycoingecko import CoinGeckoAPI
-from functools import cache
 
 
 class CryptoCurrencies:
     cg = CoinGeckoAPI()
+
+    @cache
+    def get_coin(self, coin_id: str) -> dict:
+        """
+        Returns the coin information for a given coin id.
+        :param coin_id:
+        :return:
+        """
+        return self.cg.get_coin_by_id(coin_id, localization=False, tickers=False, market_data=False, community_data=True,
+                                      developer_data=False, sparkline=False)
+
+    @cache
+    def get_coins_list(self):
+        return self.cg.get_coins_list()
 
     @cache
     def get_coins(self):
@@ -33,7 +48,6 @@ class CryptoCurrencies:
         df = pd.DataFrame(crypto_market_data['prices'], columns=["timestamp", "price"])
         df["timestamp"] = pd.to_datetime(df["timestamp"] // 1000, unit="s")
         return df
-
 
 
 cc = CryptoCurrencies()

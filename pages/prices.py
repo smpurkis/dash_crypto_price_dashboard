@@ -16,12 +16,7 @@ def make_prices_page() -> html.Div:
 
     coin_options = cc.get_coin_options()
     default_values = ['bitcoin', 'ethereum']
-    # allowed_values = ['bitcoin', 'ethereum']
-    # initial_graphs = [
-    #     make_graph(_id, coin["value"], coin["value"], show=True if coin["value"] in ['bitcoin', 'ethereum'] else False) for
-    #     coin in coin_options
-    #     if coin["value"] in allowed_values
-    # ]
+
 
     layout = html.Div(
         [
@@ -80,9 +75,10 @@ def make_prices_page() -> html.Div:
 
             graphs = [html.Br()]
             for crypto in active_cryptos:
-                coin_info = [coin for coin in coins_information if coin["id"] == crypto]
+                # coin_info = [coin for coin in coins_information if coin["id"] == crypto]
+                coin_info = cc.get_coin(coin_id=crypto)
                 if coin_info:
-                    coin_info = coin_info[0]
+                    # coin_info = coin_info[0]
                     graphs.append(
                         make_graph(
                             _id=_id,
