@@ -1,7 +1,11 @@
 from dash import html
 
+from Crypto import cc
 
-def make_title_logo(crypto_info: dict) -> html.Span:
+
+def make_title_logo(crypto: str) -> html.Span:
+    crypto_info = cc.get_coin(coin_id=crypto)
+
     layout = html.Span(
         style={"display": "flex", "flex-direction": "horizontal"},
         children=[

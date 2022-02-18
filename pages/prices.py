@@ -42,19 +42,6 @@ def make_prices_page() -> html.Div:
         ]
     )
 
-    def generate_graph(crypto, date_range: int) -> go.Figure:
-        df = cc.get_crypto_market_data(crypto_currency=crypto, date_range=date_range)
-        fig = go.Figure()
-        fig.add_trace(
-            go.Scatter(
-                x=df["timestamp"],
-                y=df["price"],
-                textfont=dict(size=160, color="LightSeaGreen"),
-            )
-        ),
-        fig.update_layout(hovermode="x")
-        return fig
-
     def callbacks():
         @app.callback(
             [
@@ -92,10 +79,7 @@ def make_prices_page() -> html.Div:
                     # coin_info = coin_info[0]
                     graphs.append(
                         make_crypto_price_frame(
-                            _id=_id,
-                            crypto=crypto,
-                            crypto_info=coin_info,
-                            graph_fig=generate_graph(crypto, date_range),
+                            _id=_id, crypto=crypto, date_range=date_range
                         )
                     )
                 else:

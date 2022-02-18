@@ -1,9 +1,26 @@
 import plotly.graph_objects as go
 
+from Crypto import cc
 from config import html, dcc
 
 
-def make_price_graph(_id: str, crypto: str, graph_fig: go.Figure):
+def generate_graph(crypto, date_range: int) -> go.Figure:
+    df = cc.get_crypto_market_data(crypto_currency=crypto, date_range=date_range)
+    fig = go.Figure()
+    fig.add_trace(
+        go.Scatter(
+            x=df["timestamp"],
+            y=df["price"],
+            textfont=dict(size=160, color="LightSeaGreen"),
+        )
+    ),
+    fig.update_layout(hovermode="x")
+    return fig
+
+
+def make_price_graph(_id: str, crypto: str, date_range: int):
+    graph_fig = generate_graph(crypto, date_range)
+
     layout = html.Div(
         children=[
             dcc.Loading(

@@ -54,7 +54,7 @@ class CryptoCurrencies:
 
     @cache
     def get_crypto_market_data(
-        self, crypto_currency: str, date_range: int
+        self, crypto_currency: str, date_range: int = 10_000
     ) -> pd.DataFrame:
         """
         Returns the market data for a given crypto currency.
