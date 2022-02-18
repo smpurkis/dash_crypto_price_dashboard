@@ -1,9 +1,14 @@
 import re
 from typing import Any, Dict
 
+import plotly.graph_objects as go
 import regex
 
-from config import html, dcc, dbc
+from components.crypto_description import make_description
+from components.crypto_price_summary import make_price_summary
+from components.crypto_title_logo import make_title_logo
+from components.price_graph import make_price_graph
+from config import html
 
 
 def filter_html_tags(text: str) -> str:
@@ -46,55 +51,32 @@ def convert_html_to_dash_components(html_string: str) -> html.Div:
     return html.Div(children=dash_converted_html)
 
 
-def make_graph(
-    _id: str, crypto: str, crypto_info: Dict[str, Any], graph_fig
+def on_same_line(components: list) -> html.Div:
+    line = html.Div(
+        children=components,
+        style={"display": "flex", "flex-direction": "row"},
+    )
+    return line
+
+
+def make_crypto_price_frame(
+    _id: str, crypto: str, crypto_info: Dict[str, Any], graph_fig: go.Figure
 ) -> html.Div:
     description = crypto_info["description"]["en"]
     description_components = convert_html_to_dash_components(html_string=description)
     layout = html.Div(
         id=f"{crypto}-show-div",
         children=[
-            html.Span(
-                style={"display": "flex", "flex-direction": "horizontal"},
-                children=[
-                    html.H1(
-                        children=crypto_info["name"], style={"margin-right": "5px"}
-                    ),
-                    html.A(
-                        children=html.Img(src=crypto_info["image"]["small"]),
-                        href=crypto_info["links"]["homepage"][0],
-                        target="_blank",
-                    ),
-                ],
+            on_same_line(
+                components=[
+                    make_title_logo(crypto_info=crypto_info),
+                    make_price_summary(crypto_info=crypto_info),
+                ]
             ),
-            dbc.Button(
-                children="Show Description",
-                color="link",
-                id={"type": "show-hide-crypto-button", "index": crypto},
+            make_description(
+                crypto=crypto, description_components=description_components
             ),
-            html.Div(
-                id={"type": "show-hide-crypto-description", "index": crypto},
-                style={"display": "none"},
-                children=[
-                    html.P(
-                        children=description_components, style={"font-size": "1.2em"}
-                    )
-                ],
-            ),
-            dcc.Loading(
-                id=f"{crypto}-loading-1",
-                children=[
-                    html.Div(
-                        [
-                            dcc.Graph(
-                                id={"type": f"{_id}-graph", "index": "n_clicks"},
-                                figure=graph_fig,
-                            )
-                        ]
-                    )
-                ],
-                type="circle",
-            ),
+            make_price_graph(_id=_id, crypto=crypto, graph_fig=graph_fig),
         ],
     )
     return layout

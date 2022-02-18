@@ -2,6 +2,7 @@ from functools import cache
 
 import pandas as pd
 from pycoingecko import CoinGeckoAPI
+import datetime
 
 
 class CryptoCurrencies:
@@ -44,6 +45,14 @@ class CryptoCurrencies:
         return self.get_coins().to_dict("records")
 
     @cache
+    def get_all_crypto_market_data(
+        self, crypto_currency: str, vs_currency: str = "usd", days: int = 10_000
+    ):
+        return self.cg.get_coin_market_chart_by_id(
+            crypto_currency, vs_currency=vs_currency, days=days
+        )
+
+    @cache
     def get_crypto_market_data(
         self, crypto_currency: str, date_range: int
     ) -> pd.DataFrame:
@@ -53,11 +62,15 @@ class CryptoCurrencies:
         :param date_range:
         :return:
         """
-        crypto_market_data = self.cg.get_coin_market_chart_by_id(
-            crypto_currency, vs_currency="usd", days=date_range
+        crypto_market_data = self.get_all_crypto_market_data(
+            crypto_currency, vs_currency="usd", days=30 if date_range <= 30 else 10_000
         )
         df = pd.DataFrame(crypto_market_data["prices"], columns=["timestamp", "price"])
         df["timestamp"] = pd.to_datetime(df["timestamp"] // 1000, unit="s")
+        df = df[
+            df["timestamp"]
+            > datetime.datetime.now() - datetime.timedelta(days=date_range)
+        ]
         return df
 
 

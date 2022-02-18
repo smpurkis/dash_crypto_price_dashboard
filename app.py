@@ -1,6 +1,6 @@
 from typing import List
 
-from components.crypto_frame import make_graph
+from components.crypto_frame import make_crypto_price_frame
 from config import app
 from layout import make_layout
 from config import app, Output, Input, html, dcc, dbc, callback

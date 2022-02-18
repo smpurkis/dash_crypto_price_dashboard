@@ -5,7 +5,7 @@ from dash import MATCH
 from Crypto import cc
 from _callbacks import _callbacks
 from components.coin_options import make_coin_options
-from components.crypto_frame import make_graph
+from components.crypto_frame import make_crypto_price_frame
 from components.standard_date_options import make_standard_date_options
 from components.standard_date_options import preset_dates, ids_dates
 from config import app, Output, Input, parse, html, dcc
@@ -38,11 +38,11 @@ def make_prices_page() -> html.Div:
                 ],
             ),
             html.Div(id=f"{_id}-graphs", children=[]),
-            # make_graph(title="ravencoin", crypto="ravencoin"),
+            # make_crypto_price_frame(title="ravencoin", crypto="ravencoin"),
         ]
     )
 
-    def generate_graph(crypto, date_range: int):
+    def generate_graph(crypto, date_range: int) -> go.Figure:
         df = cc.get_crypto_market_data(crypto_currency=crypto, date_range=date_range)
         fig = go.Figure()
         fig.add_trace(
@@ -91,7 +91,7 @@ def make_prices_page() -> html.Div:
                 if coin_info:
                     # coin_info = coin_info[0]
                     graphs.append(
-                        make_graph(
+                        make_crypto_price_frame(
                             _id=_id,
                             crypto=crypto,
                             crypto_info=coin_info,
@@ -119,13 +119,13 @@ def make_prices_page() -> html.Div:
         )
         def show_description(n_clicks, value):
             if n_clicks is None:
-                return {"display": "none"}, "Show description"
+                return {"display": "none"}, "Show Description"
             else:
                 return {"display": "block"} if value["display"] == "none" else {
                     "display": "none"
-                }, "Hide description" if value[
+                }, "Hide Description" if value[
                     "display"
-                ] == "none" else "Show description"
+                ] == "none" else "Show Description"
 
     _callbacks.append(callbacks)
     return layout
