@@ -44,7 +44,7 @@ def make_description(crypto: str) -> html.Div:
         children=[
             dbc.Button(
                 children="Show Description",
-                color="link",
+                color="secondary",
                 id={"type": "show-hide-crypto-button", "index": crypto},
             ),
             html.Div(

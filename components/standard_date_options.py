@@ -14,12 +14,12 @@ preset_dates = {
     },
     "1 Week": {
         "_id": "-date-options-last-week",
-        "color": "primary",
+        "color": "secondary",
         "timedelta": timedelta(days=7),
     },
     "1 Month": {
         "_id": "-date-options-last-month",
-        "color": "secondary",
+        "color": "primary",
         "timedelta": timedelta(days=30),
     },
     "6 Months": {
@@ -82,7 +82,7 @@ def make_standard_date_options(_id: str):
                 button_index = ids_dates.index(triggered_button)
                 colors[button_index] = "primary"
             else:
-                colors[1] = "primary"
+                colors[2] = "primary"
             return colors
 
     _callbacks.append(callbacks)

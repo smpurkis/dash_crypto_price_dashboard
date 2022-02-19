@@ -16,10 +16,14 @@ def filter_html_tags(text: str) -> str:
     return regex.sub(r"<[^>]*>", "", text)
 
 
-def on_same_line(components: list) -> html.Div:
+def on_same_line(components: list, opposite_ends: bool = False) -> html.Div:
     line = html.Div(
         children=components,
-        style={"display": "flex", "flex-direction": "row"},
+        style={
+            "display": "flex",
+            "flex-direction": "row",
+            "justify-content": "space-between" if opposite_ends else "flex-start",
+        },
     )
     return line
 
@@ -32,10 +36,12 @@ def make_crypto_price_frame(_id: str, crypto: str, date_range: int) -> html.Div:
                 components=[
                     make_title_logo(crypto=crypto),
                     make_price_summary(crypto=crypto),
-                ]
+                ],
+                opposite_ends=True,
             ),
             make_description(crypto=crypto),
             make_price_graph(_id=_id, crypto=crypto, date_range=date_range),
+            html.Hr(),
         ],
     )
     return layout

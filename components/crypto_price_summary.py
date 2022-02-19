@@ -1,5 +1,6 @@
 import datetime as dt
 
+import dash_bootstrap_components as dbc
 from dash import html
 
 from Crypto import cc
@@ -24,6 +25,8 @@ def make_price_summary(crypto: str) -> html.Div:
         {"timestamp": dt.datetime.now() - dt.timedelta(days=1825), "period": "5y"},
     ]
 
+    today_price = float(price_data.iloc[-1]["price"])
+
     # get the price data for each date range from price_data
     for date_range in date_ranges:
         date_range["price"] = float(
@@ -35,6 +38,39 @@ def make_price_summary(crypto: str) -> html.Div:
             .values[0]
         )
 
-    layout = html.Div("hello")
+        date_range["percent_change"] = (
+            (today_price - date_range["price"]) / date_range["price"]
+        ) * 100
+
+    table_header = [
+        html.Thead(html.Tr([html.Th(p["period"]) for p in date_ranges])),
+    ]
+
+    table_body = [
+        html.Tbody(
+            [
+                html.Tr(
+                    [
+                        html.Td(
+                            children=f"{'+' if p['percent_change'] > 0 else ''}{p['percent_change']:.2f}%",
+                            style={
+                                "color": "red" if p["percent_change"] < 0 else "green"
+                            },
+                        )
+                        for p in date_ranges
+                    ]
+                )
+            ]
+        )
+    ]
+
+    layout = dbc.Table(
+        table_header + table_body,
+        bordered=True,
+        dark=True,
+        hover=True,
+        responsive=True,
+        striped=True,
+    )
 
     return layout

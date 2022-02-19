@@ -1,5 +1,4 @@
 import dash
-import plotly.graph_objects as go
 from dash import MATCH
 
 from Crypto import cc
@@ -15,7 +14,6 @@ from config import date, timedelta
 def make_prices_page() -> html.Div:
     _id = "prices"
 
-    coin_options = cc.get_coin_options()
     default_values = ["bitcoin", "ethereum"]
 
     layout = html.Div(
@@ -37,15 +35,14 @@ def make_prices_page() -> html.Div:
                     make_standard_date_options(_id=_id),
                 ],
             ),
-            html.Div(id=f"{_id}-graphs", children=[]),
-            # make_crypto_price_frame(title="ravencoin", crypto="ravencoin"),
+            html.Div(id=f"{_id}-price_frames", children=[]),
         ]
     )
 
     def callbacks():
         @app.callback(
             [
-                Output(f"{_id}-graphs", "children"),
+                Output(f"{_id}-price_frames", "children"),
                 Output(f"{_id}-datetime-range-picker", "start_date"),
                 Output(f"{_id}-datetime-range-picker", "end_date"),
             ],
@@ -58,7 +55,6 @@ def make_prices_page() -> html.Div:
         )
         def hydrated_graph(start_date, end_date, active_cryptos, *active_date_buttons):
             ctx = dash.callback_context
-            coins_information = cc.coin_information()
 
             triggered_button = (
                 f"""-{ctx.triggered[0]["prop_id"].split(".")[0].split("-", 1)[-1]}"""
@@ -71,21 +67,19 @@ def make_prices_page() -> html.Div:
             else:
                 date_range = (parse(end_date) - parse(start_date)).days
 
-            graphs = [html.Br()]
+            price_frames = [html.Br()]
             for crypto in active_cryptos:
-                # coin_info = [coin for coin in coins_information if coin["id"] == crypto]
                 coin_info = cc.get_coin(coin_id=crypto)
                 if coin_info:
-                    # coin_info = coin_info[0]
-                    graphs.append(
+                    price_frames.append(
                         make_crypto_price_frame(
                             _id=_id, crypto=crypto, date_range=date_range
                         )
                     )
                 else:
-                    graphs.append(html.Div(f"{crypto} is not supported"))
+                    price_frames.append(html.Div(f"{crypto} is not supported"))
             start_date = date.today() - timedelta(days=date_range)
-            return [graphs, start_date, end_date]
+            return [price_frames, start_date, end_date]
 
         @app.callback(
             [
