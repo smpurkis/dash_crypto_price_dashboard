@@ -15,6 +15,7 @@ def make_price_summary(crypto: str) -> html.Div:
     """
     price_data = cc.get_crypto_market_data(crypto_currency=crypto)
     date_ranges = [
+        {"timestamp": dt.datetime.now(), "period": "Today"},
         {"timestamp": dt.datetime.now() - dt.timedelta(days=1), "period": "1d"},
         {"timestamp": dt.datetime.now() - dt.timedelta(days=7), "period": "1w"},
         {"timestamp": dt.datetime.now() - dt.timedelta(days=30), "period": "1m"},
@@ -26,9 +27,11 @@ def make_price_summary(crypto: str) -> html.Div:
     ]
 
     today_price = float(price_data.iloc[-1]["price"])
+    date_ranges[0]["price"] = today_price
+    date_ranges[0]["percent_change"] = 0
 
     # get the price data for each date range from price_data
-    for date_range in date_ranges:
+    for date_range in date_ranges[1:]:
         date_range["price"] = float(
             price_data.loc[
                 price_data["timestamp"]
@@ -42,6 +45,8 @@ def make_price_summary(crypto: str) -> html.Div:
             (today_price - date_range["price"]) / date_range["price"]
         ) * 100
 
+    date_ranges = list(reversed(date_ranges))
+
     table_header = [
         html.Thead(html.Tr([html.Th(p["period"]) for p in date_ranges])),
     ]
@@ -52,7 +57,7 @@ def make_price_summary(crypto: str) -> html.Div:
                 html.Tr(
                     [
                         html.Td(
-                            children=f"{'+' if p['percent_change'] > 0 else ''}{p['percent_change']:.2f}%",
+                            children=f"{'+' if p['percent_change'] > 0 else ''}{p['percent_change']:.1f}% ({int(p['price'])})",
                             style={
                                 "color": "red" if p["percent_change"] < 0 else "green"
                             },

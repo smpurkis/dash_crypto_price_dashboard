@@ -6,37 +6,8 @@ from dash import Output, Input
 from _callbacks import _callbacks
 from config import app, html, dbc
 
+
 preset_dates = {
-    "Today": {
-        "_id": "-date-options-today",
-        "color": "secondary",
-        "timedelta": timedelta(days=1),
-    },
-    "1 Week": {
-        "_id": "-date-options-last-week",
-        "color": "secondary",
-        "timedelta": timedelta(days=7),
-    },
-    "1 Month": {
-        "_id": "-date-options-last-month",
-        "color": "primary",
-        "timedelta": timedelta(days=30),
-    },
-    "6 Months": {
-        "_id": "-date-options-last-6-months",
-        "color": "secondary",
-        "timedelta": timedelta(days=180),
-    },
-    "1 Year": {
-        "_id": "-date-options-last-year",
-        "color": "secondary",
-        "timedelta": timedelta(days=365),
-    },
-    "5 Years": {
-        "_id": "-date-options-last-5-years",
-        "color": "secondary",
-        "timedelta": timedelta(days=1825),
-    },
     "All": {
         "_id": "-date-options-last-all",
         "color": "secondary",
@@ -44,7 +15,38 @@ preset_dates = {
             days=(datetime.now() - datetime(2009, 1, 1)).days
         ),  # set to start of bitcoin history
     },
+    "5 Years": {
+        "_id": "-date-options-last-5-years",
+        "color": "secondary",
+        "timedelta": timedelta(days=1825),
+    },
+    "1 Year": {
+        "_id": "-date-options-last-year",
+        "color": "secondary",
+        "timedelta": timedelta(days=365),
+    },
+    "6 Months": {
+        "_id": "-date-options-last-6-months",
+        "color": "secondary",
+        "timedelta": timedelta(days=180),
+    },
+    "1 Month": {
+        "_id": "-date-options-last-month",
+        "color": "primary",
+        "timedelta": timedelta(days=30),
+    },
+    "1 Week": {
+        "_id": "-date-options-last-week",
+        "color": "secondary",
+        "timedelta": timedelta(days=7),
+    },
+    "Today": {
+        "_id": "-date-options-today",
+        "color": "secondary",
+        "timedelta": timedelta(days=1),
+    },
 }
+
 ids_dates = [s["_id"] for s in preset_dates.values()]
 
 
@@ -82,7 +84,7 @@ def make_standard_date_options(_id: str):
                 button_index = ids_dates.index(triggered_button)
                 colors[button_index] = "primary"
             else:
-                colors[2] = "primary"
+                colors[4] = "primary"
             return colors
 
     _callbacks.append(callbacks)
